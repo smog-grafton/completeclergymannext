@@ -1,0 +1,133 @@
+.carousel {
+  border-top: 1px solid var(--border, #e4e1da);
+  position: relative;
+}
+
+.carouselLabel {
+  color: var(--text-secondary, #737373);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  margin: 0;
+  padding: 0.65rem 0;
+  text-transform: uppercase;
+}
+
+.viewport {
+  overflow: hidden;
+}
+
+.track {
+  display: flex;
+  transition: transform 320ms ease;
+  will-change: transform;
+}
+
+.slide {
+  background: var(--header-dark, #242424);
+  display: block;
+  flex: 0 0 100%;
+  min-height: clamp(10rem, 22vw, 19.5rem);
+  overflow: hidden;
+  position: relative;
+}
+
+.slide img {
+  object-fit: cover;
+}
+
+.mobileImage {
+  display: none !important;
+}
+
+.slide::after {
+  background: rgb(0 0 0 / 14%);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.slideOverlay {
+  align-items: flex-end;
+  bottom: 0;
+  color: #fff;
+  display: flex;
+  font-size: 0.72rem;
+  font-weight: 700;
+  justify-content: space-between;
+  left: 0;
+  letter-spacing: 0.07em;
+  padding: 1rem 1.1rem;
+  position: absolute;
+  right: 0;
+  text-transform: uppercase;
+  z-index: 1;
+}
+
+.carouselControls {
+  align-items: center;
+  display: flex;
+  gap: 0.7rem;
+  justify-content: flex-end;
+  padding: 0.7rem 0 0;
+}
+
+.carouselControls > button,
+.dots button {
+  background: transparent;
+  border: 0;
+  color: var(--text-primary, #242424);
+  cursor: pointer;
+  font: inherit;
+}
+
+.carouselControls > button {
+  border: 1px solid var(--border, #e4e1da);
+  font-size: 1rem;
+  height: 2rem;
+  width: 2rem;
+}
+
+.carouselControls > button:hover {
+  background: var(--brand-burgundy, #a00035);
+  border-color: var(--brand-burgundy, #a00035);
+  color: #fff;
+}
+
+.dots {
+  align-items: center;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.dots button {
+  background: var(--border-strong, #bbb5ab);
+  height: 2px;
+  padding: 0;
+  width: 1.2rem;
+}
+
+.dots button.dotActive {
+  background: var(--brand-burgundy, #a00035);
+}
+
+@media (max-width: 700px) {
+  .slide {
+    min-height: min(72vw, 18rem);
+  }
+
+  .desktopImage {
+    display: none !important;
+  }
+
+  .mobileImage {
+    display: block !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    transition: none;
+  }
+}

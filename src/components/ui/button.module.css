@@ -1,0 +1,109 @@
+.button {
+  align-items: center;
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: 0;
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 650;
+  gap: 0.5rem;
+  justify-content: center;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  min-height: 2.75rem;
+  padding: 0.8rem 1.1rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.button:focus-visible,
+.iconButton:focus-visible {
+  outline: 2px solid var(--brand-gold, #c48b00);
+  outline-offset: 3px;
+}
+
+.button:disabled,
+.iconButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.primary {
+  background: var(--brand-burgundy, #a00035);
+  border-color: var(--brand-burgundy, #a00035);
+  color: #fff;
+}
+
+.primary:hover:not(:disabled) {
+  background: #82002b;
+  border-color: #82002b;
+}
+
+.secondary {
+  background: transparent;
+  border-color: var(--border, #e4e1da);
+  color: var(--text-primary, #242424);
+}
+
+.secondary:hover:not(:disabled) {
+  border-color: var(--text-primary, #242424);
+}
+
+.quiet {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-primary, #242424);
+  padding-inline: 0.2rem;
+}
+
+.quiet:hover:not(:disabled) {
+  color: var(--brand-burgundy, #a00035);
+}
+
+.inverse {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #fff;
+}
+
+.inverse:hover:not(:disabled) {
+  background: #fff;
+  border-color: #fff;
+  color: var(--header-dark, #242424);
+}
+
+.iconButton {
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  height: 2.75rem;
+  justify-content: center;
+  padding: 0;
+  transition: background-color 160ms ease, color 160ms ease;
+  width: 2.75rem;
+}
+
+.iconButtonLight:hover {
+  background: var(--surface-muted, #f6f5f1);
+  color: var(--brand-burgundy, #a00035);
+}
+
+.iconButtonDark:hover {
+  background: rgba(255, 255, 255, 0.11);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .iconButton {
+    transition: none;
+  }
+}

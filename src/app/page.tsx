@@ -1,0 +1,41 @@
+import Link from "next/link";
+import { AdvertisementCarousel } from "@/components/advertising";
+import { BookCard } from "@/components/books";
+import { AudioPlayer, FeaturedStory, PodcastCard, ResourceCard } from "@/components/editorial";
+import { PrayerButton } from "@/components/page/PrayerAction";
+import { PageIntro, SectionHeading } from "@/components/page/PageIntro";
+import { recentToEditorialResource, toArticleResource, toPodcastResource } from "@/components/page/adapters";
+import { contentRepository } from "@/lib/data";
+import { dateLabel } from "@/lib/route-utils";
+
+export default async function HomePage() {
+  const [featured, recent, primaryAds, secondaryAds, theme, featuredBooks, podcasts, questions, prayers, events, community] = await Promise.all([
+    contentRepository.getFeaturedArticle(),
+    contentRepository.getRecentResources(8),
+    contentRepository.getAdvertisements("HOME_BANNER_PRIMARY"),
+    contentRepository.getAdvertisements("HOME_BANNER_SECONDARY"),
+    contentRepository.getCurrentTheme(),
+    contentRepository.getBooks({ featured: true, perPage: 4 }),
+    contentRepository.getPodcasts({ perPage: 4 }),
+    contentRepository.getClergyQuestions({ featured: true, perPage: 3 }),
+    contentRepository.getPrayerRequests({ perPage: 4 }),
+    contentRepository.getEvents({ upcomingOnly: true, perPage: 3 }),
+    contentRepository.getCommunityOffering(),
+  ]);
+  const featuredPodcast = podcasts.data.find((podcast) => podcast.featured) ?? podcasts.data[0];
+  const featuredQuestion = questions.data[0];
+  const featuredEvent = events.data[0];
+
+  return <>
+    <section className="page" style={{ paddingTop: 44 }}><div className="content-width">{featured ? <FeaturedStory story={toArticleResource(featured)} priority /> : <PageIntro eyebrow="The Complete Clergyman" title="Resources for faithful ministry" description="Thoughtful reading, listening, and fellowship for the work of serving Christ and his church." />}</div></section>
+    <section className="page page--muted"><div className="content-width"><SectionHeading title="Recent resources" href="/articles" linkText="All resources" /><div className="resource-grid">{recent.slice(0, 6).map((resource) => <ResourceCard key={`${resource.type}-${resource.resourceId}`} resource={recentToEditorialResource(resource)} />)}</div></div></section>
+    <section className="page"><div className="content-width"><AdvertisementCarousel advertisements={primaryAds} label="Selected from our community" /></div></section>
+    <section className="page"><div className="content-width"><div className="grid-2"><div><SectionHeading title="Listen" href="/podcasts" linkText="All audio" />{featured?.audio ? <><p className="eyebrow">Audio article</p><h2 style={{ margin: "0 0 14px", fontFamily: "var(--heading-font)", fontSize: "clamp(2.2rem, 3.6vw, 3.6rem)", fontWeight: 500, letterSpacing: "-.05em", lineHeight: 1 }}>{featured.title}</h2><p style={{ color: "var(--ink-soft)" }}>{featured.excerpt}</p><AudioPlayer title={featured.title} src={featured.audio.url} duration={featured.audio.durationSeconds} /></> : <p>New audio reflections will be published here.</p>}</div>{theme ? <div className="dark-panel"><p className="eyebrow">{theme.eyebrow}</p><h2 style={{ margin: "0 0 16px", fontFamily: "var(--heading-font)", fontSize: "clamp(2.15rem, 4vw, 4rem)", fontWeight: 500, letterSpacing: "-.05em", lineHeight: .98 }}>{theme.title}</h2><p>{theme.introduction}</p><div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 24 }}><Link className="button--secondary" href={`/messages/theme/${theme.slug}`}>Explore the theme</Link><Link className="button--quiet" href="/messages/submit" style={{ color: "#e6bf59" }}>Submit an article →</Link></div></div> : null}</div></div></section>
+    <section className="page page--muted"><div className="content-width"><SectionHeading title="Books for the journey" href="/books" linkText="Browse books" /><div className="grid-4">{featuredBooks.data.map((book) => <BookCard key={book.id} book={book} />)}</div></div></section>
+    {featuredPodcast ? <section className="page"><div className="content-width"><SectionHeading title="The Complete Clergyman Podcast" href="/podcasts" linkText="All episodes" /><div className="grid-2"><PodcastCard podcast={toPodcastResource(featuredPodcast)} /><div className="surface-panel" style={{ alignSelf: "stretch" }}><p className="eyebrow">Latest conversation</p><h2 style={{ margin: "0 0 16px", fontFamily: "var(--heading-font)", fontSize: "clamp(2rem, 3.6vw, 3.5rem)", fontWeight: 500, letterSpacing: "-.05em", lineHeight: 1 }}>{featuredPodcast.title}</h2><p>{featuredPodcast.description}</p><p className="metadata"><span>Episode {featuredPodcast.episodeNumber}</span><span>{dateLabel(featuredPodcast.publishedAt)}</span></p><div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 25 }}><Link className="button" href={`/podcasts/${featuredPodcast.slug}`}>Watch trailer</Link><a className="button--secondary" href={featuredPodcast.youtubeUrl} target="_blank" rel="noreferrer">Full episode on YouTube ↗</a></div></div></div></div></section> : null}
+    <section className="page"><div className="content-width"><AdvertisementCarousel advertisements={secondaryAds} label="Selected ministry opportunities" /></div></section>
+    <section className="page page--muted"><div className="content-width"><div className="grid-2">{featuredQuestion ? <section><SectionHeading title="Ask the Clergy" href="/ask-the-clergy" linkText="All answers" /><article className="surface-panel"><p className="eyebrow">A thoughtful response</p><h2 style={{ margin: "0 0 16px", fontFamily: "var(--heading-font)", fontSize: "clamp(2rem, 3vw, 3rem)", fontWeight: 500, letterSpacing: "-.04em", lineHeight: 1 }}>{featuredQuestion.shortQuestion}</h2><p>{featuredQuestion.excerpt}</p><Link className="text-link" href={`/ask-the-clergy/${featuredQuestion.slug}`}>Read the response →</Link></article></section> : null}<section><SectionHeading title="Prayer Wall" href="/prayer-wall" linkText="Carry a request" /><div style={{ borderTop: "2px solid var(--ink)" }}>{prayers.data.slice(0, 3).map((prayer) => <article className="resource-row" key={prayer.id} style={{ gridTemplateColumns: "1fr auto", gap: 16 }}><div><p className="eyebrow">{prayer.isAnonymous ? "Anonymous" : prayer.publicDisplayName} · {prayer.country}</p><p style={{ margin: 0, color: "var(--ink-soft)" }}>{prayer.request}</p></div><PrayerButton prayerId={prayer.id} initialCount={prayer.prayerCount} /></article>)}</div></section></div></div></section>
+    {featuredEvent ? <section className="page"><div className="content-width"><SectionHeading title="Upcoming events" href="/events" linkText="All events" /><div className="dark-panel home-event"><div className="date-block"><strong>{new Intl.DateTimeFormat("en", { day: "2-digit" }).format(new Date(featuredEvent.startsAt))}</strong><span>{new Intl.DateTimeFormat("en", { month: "short" }).format(new Date(featuredEvent.startsAt))}</span></div><div><p className="eyebrow">{featuredEvent.city}, {featuredEvent.country}</p><h2 style={{ margin: "0 0 8px", fontFamily: "var(--heading-font)", fontSize: "clamp(2rem, 4vw, 3.6rem)", fontWeight: 500, letterSpacing: "-.05em", lineHeight: 1 }}>{featuredEvent.title}</h2><p>{featuredEvent.shortDescription}</p></div><Link className="button--secondary" href={`/events/${featuredEvent.slug}`}>Event details</Link></div></div></section> : null}
+    <section className="page page--muted"><div className="content-width"><div className="grid-2"><div><p className="eyebrow">A considered connection</p><h2 style={{ margin: "0 0 16px", fontFamily: "var(--heading-font)", fontSize: "clamp(2.6rem, 4.6vw, 4.5rem)", fontWeight: 500, letterSpacing: "-.06em", lineHeight: .94 }}>{community.title}</h2><p style={{ maxWidth: 560, color: "var(--ink-soft)", fontSize: "1.08rem" }}>{community.description}</p><Link className="button" href="/join">Join the community</Link></div><div style={{ borderTop: "2px solid var(--ink)" }}>{community.benefits.map((benefit, index) => <div className="resource-row" key={benefit.title} style={{ gridTemplateColumns: "40px 1fr" }}><p className="resource-row__type">0{index + 1}</p><div><h3>{benefit.title}</h3><p>{benefit.description}</p></div></div>)}</div></div></div></section>
+  </>;
+}
