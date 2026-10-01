@@ -4,6 +4,11 @@ import { Footer, SiteHeader } from "@/components/layout";
 import { contentRepository } from "@/lib/data";
 import "./globals.css";
 
+// Site chrome, navigation, metadata, and pages are managed in Laravel. Render
+// them at request time so a Vercel build never has to depend on the API being
+// reachable or able to sustain a burst of static-generation requests.
+export const dynamic = "force-dynamic";
+
 const sans = DM_Sans({
   variable: "--font-sans",
   subsets: ["latin"],

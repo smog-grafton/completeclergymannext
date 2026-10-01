@@ -1,6 +1,10 @@
 import type { MetadataRoute } from "next";
 import { contentRepository } from "@/lib/data";
 
+// The sitemap is content-driven, so build it from the current Laravel data at
+// request time instead of contacting the API during a Vercel deployment.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [site, articles, messages, books, podcasts, answers, events, pages] = await Promise.all([
     contentRepository.getSiteConfig(),
