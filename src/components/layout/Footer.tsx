@@ -58,6 +58,8 @@ export function Footer({
   socialLinks,
 }: FooterProps) {
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [hasConsent, setHasConsent] = useState(false);
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
@@ -78,10 +80,11 @@ export function Footer({
       if (onNewsletterSubmit) {
         await onNewsletterSubmit(trimmedEmail);
       } else {
-        await postPublicApi("/subscriptions", { email: trimmedEmail, source: "footer" });
+        await postPublicApi("/subscriptions", { email: trimmedEmail, phone: phone.trim() || undefined, source: "footer", interests: hasConsent ? ["newsletter", "sms"] : ["newsletter"] });
       }
       setIsSubscribed(true);
       setEmail("");
+      setPhone("");
     } catch {
       setFormError("We could not save your email just now. Please try again.");
     } finally {
@@ -153,6 +156,21 @@ export function Footer({
                     {isSubmitting ? "Saving" : (newsletter.buttonLabel ?? "Subscribe")}
                   </Button>
                 </div>
+                <label className={styles.visuallyHidden} htmlFor="footer-newsletter-phone">
+                  Phone number (optional)
+                </label>
+                <input
+                  autoComplete="tel"
+                  id="footer-newsletter-phone"
+                  onChange={(event) => setPhone(event.target.value)}
+                  placeholder="Phone number (optional)"
+                  type="tel"
+                  value={phone}
+                />
+                <label className={styles.consent}>
+                  <input checked={hasConsent} onChange={(event) => setHasConsent(event.target.checked)} type="checkbox" />
+                  <span>I am happy to receive occasional ministry updates by email{phone ? " and SMS" : ""}.</span>
+                </label>
                 {formError ? (
                   <p aria-live="polite" className={styles.formError} id="footer-newsletter-error">
                     {formError}

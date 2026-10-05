@@ -184,7 +184,7 @@ export interface MessageWithRelations extends Message {
   topics: Topic[];
 }
 
-export type BookFormatKind = "pdf" | "online-reader" | "audio";
+export type BookFormatKind = "pdf" | "online-reader" | "flipbook" | "audio";
 
 export interface BookFormat {
   kind: BookFormatKind;
@@ -235,6 +235,7 @@ export interface Book extends BaseModel {
   language: ContentLanguageCode;
   publishedAt: IsoDateString;
   price: Money;
+  accessType: "free" | "purchase" | "member";
   formats: BookFormat[];
   isbn?: string;
   pageCount: number;
@@ -318,6 +319,8 @@ export interface ClergyQuestionWithRelations extends ClergyQuestion {
 }
 
 export interface PrayerRequest extends BaseModel<ModerationStatus> {
+  title?: string;
+  category?: string;
   publicDisplayName: string;
   country: string;
   district?: string;
@@ -347,6 +350,10 @@ export interface Event extends BaseModel<EventRegistrationStatus> {
   venue: string;
   address: string;
   capacity?: number;
+  price?: Money;
+  registrationOpen?: boolean;
+  ticketSalesEnabled?: boolean;
+  ticketInstructions?: string;
   registeredCount: number;
   organiser: string;
   contact: EventContact;
@@ -471,6 +478,26 @@ export interface SiteConfig extends BaseModel {
   currentThemeId: number;
 }
 
+export interface Hymn {
+  id: number;
+  number?: string;
+  title: string;
+  slug: string;
+  tune?: string;
+  composer?: string;
+  description?: string;
+  lyrics?: string;
+  audioUrl?: string;
+  audioMimeType?: string;
+  durationSeconds?: number;
+}
+
+export interface HymnFilters {
+  query?: string;
+  page?: number;
+  perPage?: number;
+}
+
 export interface PageCallToAction {
   label: string;
   href: string;
@@ -562,6 +589,8 @@ export interface EventFilters {
 export interface PrayerRequestFilters {
   query?: string;
   country?: string;
+  category?: string;
+  sort?: "newest" | "most-prayed";
   page?: number;
   perPage?: number;
 }
@@ -630,6 +659,9 @@ export interface ContentRepository {
   getBookBySlug(slug: string): Promise<BookWithRelations | undefined>;
   getRelatedBooks(bookId: number, limit?: number): Promise<BookWithRelations[]>;
   getBookCategories(): Promise<BookCategory[]>;
+  getHymns(filters?: HymnFilters): Promise<PageResult<Hymn>>;
+  getHymnBySlug(slug: string): Promise<Hymn | undefined>;
+  getSocialLinks(): Promise<SocialLink[]>;
   getPodcasts(filters?: PodcastFilters): Promise<PageResult<PodcastWithRelations>>;
   getPodcastBySlug(slug: string): Promise<PodcastWithRelations | undefined>;
   getClergyQuestions(filters?: ClergyQuestionFilters): Promise<PageResult<ClergyQuestionWithRelations>>;

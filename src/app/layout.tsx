@@ -44,8 +44,9 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const [site, primary, features, drawer, footerExplore, footerFeatures, footerOrganisation, footerAccount, searchResults] = await Promise.all([
+  const [site, socialLinks, primary, features, drawer, footerExplore, footerFeatures, footerOrganisation, footerAccount, searchResults] = await Promise.all([
     contentRepository.getSiteConfig(),
+    contentRepository.getSocialLinks(),
     contentRepository.getNavigation("primary"),
     contentRepository.getNavigation("features"),
     contentRepository.getNavigation("drawer"),
@@ -96,7 +97,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             legalLinks={site.footer.legalLinks}
             mission={site.footer.missionStatement}
             copyright={site.footer.copyright}
-            socialLinks={site.footer.socialLinks.map((link) => ({ id: link.platform, label: link.label, href: link.href, icon: link.platform as "facebook" | "instagram" | "linkedin" | "youtube" }))}
+            socialLinks={socialLinks.map((link) => ({ id: link.platform, label: link.label, href: link.href, icon: link.platform as "instagram" | "linkedin" | "youtube" | "x" | "website" }))}
             newsletter={{ eyebrow: "Stay connected", heading: site.footer.newsletterHeading, description: site.footer.newsletterDescription, placeholder: "Your email address", buttonLabel: "Subscribe", successMessage: "Thank you. Your place in the community is reserved." }}
           />
         </div>
