@@ -1,6 +1,8 @@
 # Laravel integration contract
 
-`src/lib/laravelContentRepository.ts` is the live Laravel adapter. Set `NEXT_PUBLIC_API_URL` to activate it; when the value is absent, the fixture repository remains available for isolated visual-development work.
+`src/lib/laravelContentRepository.ts` is the live Laravel adapter. Set `NEXT_PUBLIC_API_URL` to the Laravel API origin; the deployed application has no production content fixture fallback.
+
+For the production site this must be `https://portal.completeclergyman.org` at build time. Laravel must list the public site origins in its `FRONTEND_ORIGINS` environment variable (for example, `https://completeclergyman.org,https://www.completeclergyman.org`) and clear its configuration cache after the change. Account, checkout, library, and protected-reader calls send a Sanctum bearer token in the `Authorization` header, so a browser-side "Failed to fetch" normally indicates an incorrect API URL, a missing allowed origin, or an unavailable API—not an unlocked purchase.
 
 ## Global configuration
 
@@ -20,6 +22,9 @@ The repository shapes map directly to the frontend DTOs:
 - `GET /api/v1/articles`, `GET /api/v1/articles/{slug}`
 - `GET /api/v1/messages`, `GET /api/v1/messages/{slug}`
 - `GET /api/v1/books`, `GET /api/v1/books/{slug}`
+- `GET /api/v1/books/{slug}/preview` for public sample chapters; authenticated reader, download, audio, and flipbook endpoints for complete editions
+- `GET /api/v1/monthly-themes`, `GET /api/v1/monthly-themes/{slug}`
+- `GET /api/v1/subscription-plans`, authenticated `POST /api/v1/subscription-intents`
 - `GET /api/v1/podcasts`, `GET /api/v1/podcasts/{slug}`
 - `GET /api/v1/ask`, `GET /api/v1/ask/{slug}`
 - `GET /api/v1/prayer-requests`, `GET /api/v1/events`, `GET /api/v1/events/{slug}`
@@ -44,7 +49,7 @@ Return structured validation errors keyed by input name. Never expose submitted 
 
 ## Storage
 
-Use Laravel disks and paths, never machine-specific absolute paths. Public images may use the `public` disk and `storage:link`; paid book files must remain private and be served only after entitlement checks. Suggested directories: `articles/images`, `articles/pdfs`, `articles/audio`, `books/covers`, `books/samples`, `podcasts/artwork`, `events/images`, `advertisements`, and `team`.
+Use Laravel disks and paths, never machine-specific absolute paths. Public images may use the `public` disk and `storage:link`; book editions, hosted book audio, flipbook source PDFs, generated page images, and thumbnails remain on the private `local` disk. The frontend uses authenticated reader/download/audio endpoints and short-lived signed flipbook-page URLs—never a `/storage/...` URL—for those editions.
 
 ## Migration order
 

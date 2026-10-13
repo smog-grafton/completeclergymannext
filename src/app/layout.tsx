@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Libre_Baskerville } from "next/font/google";
 import { Footer, SiteHeader } from "@/components/layout";
+import { MediaPlaybackProvider } from "@/components/media";
 import { contentRepository } from "@/lib/data";
 import "./globals.css";
 
@@ -73,6 +74,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="en" className={`${sans.variable} ${editorial.variable}`}>
       <body>
+        <MediaPlaybackProvider>
         <a className="skip-link" href="#main-content">Skip to content</a>
         <div className="site-canvas">
           <SiteHeader
@@ -101,6 +103,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             newsletter={{ eyebrow: "Stay connected", heading: site.footer.newsletterHeading, description: site.footer.newsletterDescription, placeholder: "Your email address", buttonLabel: "Subscribe", successMessage: "Thank you. Your place in the community is reserved." }}
           />
         </div>
+        </MediaPlaybackProvider>
       </body>
     </html>
   );

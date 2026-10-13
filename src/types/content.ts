@@ -62,7 +62,7 @@ export interface VideoAsset {
 
 export interface Money {
   amount: number;
-  currency: "UGX" | "USD";
+  currency: string;
 }
 
 export interface SeoMetadata {
@@ -145,6 +145,7 @@ export interface Article extends BaseModel {
   publishedAt: IsoDateString;
   pdfUrl?: string;
   audio?: AudioAsset;
+  hasMedia?: boolean;
   featured: boolean;
   readingTimeMinutes: number;
   relatedArticleIds: number[];
@@ -173,6 +174,8 @@ export interface Message extends BaseModel {
   publishedAt: IsoDateString;
   video?: VideoAsset;
   audio?: AudioAsset;
+  hasMedia?: boolean;
+  mediaKind?: "audio" | "video";
   featured: boolean;
   readingTimeMinutes: number;
   seo: SeoMetadata;
@@ -241,6 +244,7 @@ export interface Book extends BaseModel {
   pageCount: number;
   chapters: BookChapter[];
   featured: boolean;
+  hasMedia?: boolean;
   relatedBookIds: number[];
   seo: SeoMetadata;
 }
@@ -282,6 +286,7 @@ export interface PodcastEpisode extends BaseModel {
   youtubeVideoId: string;
   qrDestination: string;
   featured: boolean;
+  hasMedia?: boolean;
   seo: SeoMetadata;
 }
 
@@ -490,6 +495,7 @@ export interface Hymn {
   audioUrl?: string;
   audioMimeType?: string;
   durationSeconds?: number;
+  hasMedia?: boolean;
 }
 
 export interface HymnFilters {
@@ -648,6 +654,7 @@ export interface ContentRepository {
   getAuthors(): Promise<Author[]>;
   getAuthorBySlug(slug: string): Promise<Author | undefined>;
   getThemes(): Promise<MonthlyTheme[]>;
+  getThemeBySlug(slug: string): Promise<MonthlyTheme | undefined>;
   getCurrentTheme(): Promise<MonthlyTheme | undefined>;
   getArticles(filters?: ArticleFilters): Promise<PageResult<ArticleWithRelations>>;
   getArticleBySlug(slug: string): Promise<ArticleWithRelations | undefined>;

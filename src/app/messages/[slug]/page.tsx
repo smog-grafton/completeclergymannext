@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AudioPlayer, AuthorMeta } from "@/components/editorial";
+import { AuthorMeta } from "@/components/editorial";
+import { MediaPlaybackGate } from "@/components/media";
 import { JsonLd } from "@/components/page/JsonLd";
 import { RichText } from "@/components/page/RichText";
 import { toEditorialAuthor } from "@/components/page/adapters";
@@ -29,7 +30,7 @@ export default async function MessageDetailPage({ params }: { params: Promise<{ 
         </header>
         <figure style={{ margin: "0 auto 48px", width: "min(1020px, var(--content-width))" }}><Image src={message.coverImage.url} alt={message.coverImage.alt} width={message.coverImage.width} height={message.coverImage.height} sizes="(max-width: 1020px) 100vw, 1020px" style={{ width: "100%", height: "auto", display: "block" }} priority /></figure>
         <div className="reading-width">
-          {message.audio ? <AudioPlayer title={`Listen to ${message.title}`} src={message.audio.url} duration={message.audio.durationSeconds} /> : null}
+          {message.hasMedia ? <MediaPlaybackGate manifestEndpoint={`/messages/${encodeURIComponent(message.slug)}`} title={message.title} artwork={message.coverImage.url} artist={message.author.name} kind={message.mediaKind ?? "audio"} /> : null}
           <RichText blocks={message.body} />
           {message.video ? <p style={{ marginTop: 30 }}><a className="button--secondary" href={message.video.url} target="_blank" rel="noreferrer">Watch related video ↗</a></p> : null}
           <p style={{ marginTop: 32 }}><Link className="text-link" href="/messages">More messages →</Link></p>

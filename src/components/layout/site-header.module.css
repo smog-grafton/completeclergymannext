@@ -323,6 +323,28 @@
   justify-self: end;
 }
 
+.accountLink {
+  align-items: center;
+  color: var(--text-primary, #242424);
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 650;
+  gap: 0.32rem;
+  min-height: 2.35rem;
+  padding: 0 0.45rem;
+  text-decoration: none;
+}
+
+.accountLink:hover,
+.accountLink:focus-visible {
+  color: var(--brand-burgundy, #a00035);
+}
+
+.accountLink:focus-visible {
+  outline: 2px solid var(--brand-gold, #c48b00);
+  outline-offset: 2px;
+}
+
 .searchPanel {
   background: var(--surface, #fff);
   border-bottom: 1px solid var(--border, #e4e1da);
@@ -667,6 +689,14 @@
 }
 
 @media (max-width: 560px) {
+  .accountLink span {
+    display: none;
+  }
+
+  .accountLink {
+    padding-inline: 0.35rem;
+  }
+
   .announcement {
     font-size: 0.75rem;
   }

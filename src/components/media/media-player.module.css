@@ -1,0 +1,41 @@
+.screenReaderMedia { height: 1px; left: -9999px; position: fixed; top: 0; width: 1px; }
+.gate { margin-top: 2rem; }
+.skeleton { animation: mediaPulse 1.2s ease-in-out infinite alternate; background: #e7e3dc; height: 11rem; margin-bottom: .85rem; }
+@keyframes mediaPulse { from { opacity: .55; } to { opacity: 1; } }
+.audioPlayer { align-items: center; background: #1e2225; border: 1px solid #383f43; color: #fff; display: grid; gap: 1rem; grid-template-columns: auto minmax(0, 1fr) auto; padding: 1.1rem; position: relative; }
+.audioCompact { grid-template-columns: auto minmax(0, 1fr); }
+.playButton, .iconButton, .textButton, .speedSelect { background: transparent; border: 1px solid currentColor; color: inherit; cursor: pointer; font: inherit; min-height: 2.4rem; }
+.playButton { align-items: center; background: #d5b15c; border-color: #d5b15c; border-radius: 50%; color: #111; display: inline-flex; font-size: .85rem; height: 2.8rem; justify-content: center; padding-left: .12rem; width: 2.8rem; }
+.audioBody { min-width: 0; }
+.audioMeta { align-items: baseline; display: flex; gap: .55rem; justify-content: space-between; margin-bottom: .7rem; min-width: 0; }
+.audioMeta strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.audioMeta span, .timeRow, .providerNote { color: #bdc2c4; font-size: .78rem; }
+.range { accent-color: #d5b15c; cursor: pointer; display: block; width: 100%; }
+.timeRow { display: flex; justify-content: space-between; margin-top: .38rem; }
+.audioActions, .controlRow { align-items: center; display: flex; flex-wrap: wrap; gap: .45rem; }
+.textButton, .speedSelect { border-color: #667075; font-size: .74rem; padding: .25rem .48rem; }
+.speedSelect { background: #262c2f; color: #fff; }
+.error { color: #b42318; margin: .7rem 0 0; }
+.audioPlayer .error { grid-column: 1 / -1; color: #ffb4ab; }
+.miniPlayer { align-items: center; background: #171a1c; border-top: 2px solid #d5b15c; bottom: 0; box-shadow: 0 -6px 20px rgba(0, 0, 0, .18); color: #fff; display: flex; gap: .75rem; left: 0; padding: .7rem max(1rem, calc((100vw - 1240px) / 2)); position: fixed; right: 0; z-index: 40; }
+.miniCopy { display: grid; flex: 1; min-width: 0; }
+.miniCopy strong, .miniCopy span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.miniCopy span, .miniTime { color: #bdc2c4; font-size: .75rem; }
+.videoPlayer { background: #080909; color: #fff; outline: none; position: relative; }
+.videoPlayer:focus-visible { box-shadow: 0 0 0 3px #d5b15c; }
+.videoElement { aspect-ratio: 16 / 9; display: block; max-height: 76vh; object-fit: contain; width: 100%; }
+.videoOverlay { inset: 0; pointer-events: none; position: absolute; }
+.videoOverlay span { background: rgba(0, 0, 0, .72); left: 50%; padding: .5rem .8rem; position: absolute; top: 50%; transform: translate(-50%, -50%); }
+.videoControls { background: linear-gradient(transparent, rgba(0,0,0,.94) 32%); bottom: 0; left: 0; padding: 2rem 1rem .85rem; position: absolute; right: 0; }
+.progressRow { align-items: center; display: grid; font-size: .72rem; gap: .6rem; grid-template-columns: minmax(0, 1fr) auto; margin-bottom: .65rem; }
+.controlSpacer { flex: 1; }
+.volumeRange { accent-color: #d5b15c; max-width: 6rem; }
+.providerShell { aspect-ratio: 16 / 9; background: #111; position: relative; }
+.providerShell iframe { border: 0; height: 100%; inset: 0; position: absolute; width: 100%; }
+.providerNote { margin: .55rem 0 0; }
+.locked { background: #f3f0ea; border-left: 3px solid #a00035; padding: 1.5rem; }
+.locked h2 { font-family: var(--heading-font); margin: .2rem 0 .5rem; }
+.lockEyebrow { color: #a00035; font-size: .72rem; font-weight: 800; letter-spacing: .1em; margin: 0; text-transform: uppercase; }
+.lockActions { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.1rem; }
+.downloadLink { color: var(--brand-burgundy, #a00035); display: inline-block; font-size: .85rem; font-weight: 700; margin-top: .85rem; }
+@media (max-width: 680px) { .audioPlayer { grid-template-columns: auto minmax(0, 1fr); } .audioActions { grid-column: 1 / -1; } .miniTime { display: none; } .miniPlayer { gap: .42rem; padding: .55rem .75rem; } .miniPlayer .iconButton { font-size: .67rem; min-width: 2.25rem; padding: .2rem; } .videoControls { padding: 1.5rem .55rem .5rem; } .videoControls .textButton:nth-of-type(2), .videoControls .textButton:nth-of-type(3), .volumeRange { display: none; } .speedSelect { max-width: 4.4rem; } }

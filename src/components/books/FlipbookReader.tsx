@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { accountFetch } from "@/lib/accountApi";
 
 type FlipbookPage = { number: number; imageUrl: string; thumbnailUrl?: string; width?: number; height?: number };
 
@@ -12,14 +14,13 @@ export function FlipbookReader({ slug, title }: { slug: string; title: string })
 
   useEffect(() => {
     if (!apiBase) { setError("The reader is not configured yet."); return; }
-    const token = window.localStorage.getItem("cc_access_token");
-    fetch(`${apiBase}/api/v1/books/${slug}/flipbook`, { headers: { Accept: "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) } })
-      .then(async (response) => response.ok ? response.json() : Promise.reject(new Error("This flipbook is not ready yet.")))
+    accountFetch(`/books/${slug}/flipbook`)
+      .then(async (response) => response.ok ? response.json() : Promise.reject(new Error(response.status === 401 || response.status === 403 ? "Sign in with an active purchase or subscription to open this complete edition." : "This flipbook is not ready yet.")))
       .then((payload) => setPages(payload.data?.pages ?? []))
       .catch((reason: Error) => setError(reason.message));
   }, [apiBase, slug]);
 
-  if (error) return <div className="empty-state"><h2>Flipbook unavailable</h2><p>{error}</p></div>;
+  if (error) return <div className="empty-state"><h2>Flipbook unavailable</h2><p>{error}</p>{error.startsWith("Sign in") ? <p style={{ marginTop: 24 }}><Link className="button" href={`/login?next=${encodeURIComponent(`/books/${slug}/read?format=flipbook`)}`}>Sign in</Link></p> : null}</div>;
   if (!pages.length) return <div className="surface-panel" aria-busy="true"><p className="eyebrow">Preparing reader</p><h1>{title}</h1><p>Loading the edition…</p></div>;
   const page = pages[current];
 

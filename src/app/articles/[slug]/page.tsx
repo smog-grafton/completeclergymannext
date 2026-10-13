@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { AudioPlayer, AuthorMeta, ResourceCard } from "@/components/editorial";
+import { AuthorMeta, ResourceCard } from "@/components/editorial";
+import { MediaPlaybackGate } from "@/components/media";
 import { JsonLd } from "@/components/page/JsonLd";
 import { RichText } from "@/components/page/RichText";
 import { toArticleResource, toEditorialAuthor } from "@/components/page/adapters";
@@ -39,8 +40,8 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
           <Image src={article.coverImage.url} alt={article.coverImage.alt} width={article.coverImage.width} height={article.coverImage.height} sizes="(max-width: 1020px) 100vw, 1020px" style={{ width: "100%", height: "auto", display: "block" }} priority />
         </figure>
         <div className="reading-width">
-          {article.audio ? <AudioPlayer title={`Listen to ${article.title}`} src={article.audio.url} duration={article.audio.durationSeconds} /> : null}
-          <div className="prose" style={{ marginTop: article.audio ? 42 : 0 }}><RichText blocks={article.body} className="" /></div>
+          {article.hasMedia ? <MediaPlaybackGate manifestEndpoint={`/articles/${encodeURIComponent(article.slug)}`} title={`Listen to ${article.title}`} artwork={article.coverImage.url} artist={article.author.name} kind="audio" /> : null}
+          <div className="prose" style={{ marginTop: article.hasMedia ? 42 : 0 }}><RichText blocks={article.body} className="" /></div>
           <div className="rule" />
           <div className="surface-panel">
             <p className="eyebrow">About the author</p>

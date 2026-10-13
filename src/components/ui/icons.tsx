@@ -15,7 +15,8 @@ export type IconName =
   | "search"
   | "website"
   | "x"
-  | "youtube";
+  | "youtube"
+  | "user";
 
 export interface IconProps extends Omit<SVGProps<SVGSVGElement>, "children"> {
   name: IconName;
@@ -137,6 +138,13 @@ export function Icon({ name, size = 20, ...props }: IconProps) {
       return (
         <svg {...common} fill="currentColor" stroke="none" viewBox="0 0 24 24">
           <path d="M21.6 7.1a2.9 2.9 0 0 0-2-2C17.8 4.6 12 4.6 12 4.6s-5.8 0-7.6.5a2.9 2.9 0 0 0-2 2A30.3 30.3 0 0 0 2 12a30.3 30.3 0 0 0 .4 4.9 2.9 2.9 0 0 0 2 2c1.8.5 7.6.5 7.6.5s5.8 0 7.6-.5a2.9 2.9 0 0 0 2-2A30.3 30.3 0 0 0 22 12a30.3 30.3 0 0 0-.4-4.9ZM10.1 15.1V8.9l5.3 3.1-5.3 3.1Z" />
+        </svg>
+      );
+    case "user":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="8" r="3.5" />
+          <path d="M4.5 20c.9-3.4 3.3-5.2 7.5-5.2s6.6 1.8 7.5 5.2" />
         </svg>
       );
   }

@@ -258,6 +258,10 @@ export function SiteHeader({
           </nav>
 
           <div className={styles.headerActions}>
+            <Link aria-label="Your account" className={styles.accountLink} href="/account">
+              <Icon name="user" size={20} />
+              <span>Account</span>
+            </Link>
             <IconButton
               aria-controls="site-search-panel"
               aria-expanded={isSearchOpen}

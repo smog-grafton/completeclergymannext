@@ -39,8 +39,8 @@ export function BookCard({ book, href, className, priority = false }: BookCardPr
   );
 }
 
-export function formatPrice(amount: number, currency: "UGX" | "USD") {
-  return new Intl.NumberFormat("en-UG", {
+export function formatPrice(amount: number, currency: string) {
+  return new Intl.NumberFormat(currency === "UGX" ? "en-UG" : "en", {
     style: "currency",
     currency,
     maximumFractionDigits: 0,

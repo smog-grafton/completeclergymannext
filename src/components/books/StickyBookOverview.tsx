@@ -27,6 +27,8 @@ export function StickyBookOverview({
   const hasAudio = book.formats.some((format) => format.kind === "audio" && format.isAvailable);
   const classes = [styles.stickyBookOverview, className].filter(Boolean).join(" ");
   const destination = purchaseHref ?? "/checkout?book=" + encodeURIComponent(book.slug);
+  const isFree = book.accessType === "free";
+  const primaryHref = isFree ? (sampleHref ?? "/books/" + book.slug + "/read") : destination;
 
   return (
     <article className={classes}>
@@ -34,8 +36,8 @@ export function StickyBookOverview({
         <div className={styles.bookSticky}>
           <BookCover book={book} size="large" priority />
           <p className={styles.bookPrice}>{formatPrice(book.price.amount, book.price.currency)}</p>
-          <Link className={styles.bookPrimaryAction} href={destination}>
-            Buy this book
+          <Link className={styles.bookPrimaryAction} href={primaryHref}>
+            {isFree ? "Read this book" : "Buy this book"}
           </Link>
           <div className={styles.bookFormats} aria-label="Available formats">
             {book.formats
@@ -52,11 +54,11 @@ export function StickyBookOverview({
         {book.subtitle ? <p className={styles.bookDetailSubtitle}>{book.subtitle}</p> : null}
         <p className={styles.bookAuthors}>By {book.authors.map((author) => author.name).join(", ")}</p>
         <div className={styles.bookActions}>
-          <Link className={styles.bookPrimaryAction} href={destination}>
-            Buy now
+          <Link className={styles.bookPrimaryAction} href={primaryHref}>
+            {isFree ? "Read now" : "Buy now"}
           </Link>
           <Link className={styles.bookSecondaryAction} href={sampleHref ?? "/books/" + book.slug + "/read"}>
-            Read a sample
+            {isFree ? "Open reader" : "Read a sample"}
           </Link>
           {hasAudio ? (
             <Link className={styles.bookSecondaryAction} href={audioHref ?? "/books/" + book.slug + "/audio"}>
