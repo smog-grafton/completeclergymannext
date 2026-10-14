@@ -217,13 +217,13 @@ a.authorName:hover {
 .featuredStory {
   align-items: stretch;
   display: grid;
-  grid-template-columns: minmax(0, 1.12fr) minmax(17rem, 0.88fr);
+  grid-template-columns: minmax(0, 1fr) minmax(28rem, 1fr);
 }
 
 .featuredMedia {
   background: var(--surface-muted, #f6f5f1);
   display: block;
-  min-height: clamp(19rem, 37vw, 34rem);
+  min-height: clamp(18rem, 30vw, 29rem);
   overflow: hidden;
   position: relative;
 }
@@ -244,18 +244,18 @@ a.authorName:hover {
   align-content: center;
   display: grid;
   justify-items: start;
-  padding: clamp(1.75rem, 5vw, 5rem);
+  padding: clamp(1.5rem, 3.5vw, 3.25rem);
 }
 
 .featuredTitle {
   color: var(--text-primary, #242424);
   font-family: var(--font-editorial, Georgia, serif);
-  font-size: clamp(2.25rem, 4.5vw, 4.65rem);
+  font-size: clamp(2rem, 3.25vw, 3.45rem);
   font-weight: 600;
   letter-spacing: -0.045em;
-  line-height: 0.98;
+  line-height: 1.02;
   margin: 0;
-  max-width: 12ch;
+  max-width: 22ch;
   overflow-wrap: anywhere;
 }
 
@@ -263,13 +263,13 @@ a.authorName:hover {
   color: var(--text-secondary, #5f5d59);
   font-size: clamp(1rem, 1.4vw, 1.18rem);
   line-height: 1.6;
-  margin: 1.4rem 0;
-  max-width: 39rem;
+  margin: 1rem 0;
+  max-width: 45rem;
   overflow-wrap: anywhere;
 }
 
 .featuredCopy .authorMeta {
-  margin-bottom: 1.55rem;
+  margin-bottom: 1.15rem;
 }
 
 .textAction {

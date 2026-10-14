@@ -19,12 +19,27 @@ function getHref(story: EditorialResource) {
   return "/" + kind + "s/" + story.slug;
 }
 
+/** Keep editorial cards useful when an administrator supplies a full headline or body copy. */
+function truncateForFeature(value: string, maximumLength: number): string {
+  const normalized = value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+
+  if (normalized.length <= maximumLength) return normalized;
+
+  const candidate = normalized.slice(0, maximumLength + 1);
+  const lastWordBoundary = candidate.lastIndexOf(" ");
+  const clipped = lastWordBoundary > 0 ? candidate.slice(0, lastWordBoundary) : normalized.slice(0, maximumLength);
+
+  return `${clipped.trimEnd()}…`;
+}
+
 export function FeaturedStory({ story, href, priority = false, className }: FeaturedStoryProps) {
   const sourceImage = story.coverImage ?? story.image;
   const image = mediaUrl(sourceImage);
   const destination = href ?? getHref(story);
   const kind = story.kind ?? story.type ?? "article";
   const classes = [styles.featuredStory, className].filter(Boolean).join(" ");
+  const title = truncateForFeature(story.title, 92);
+  const summary = story.excerpt ?? story.description;
 
   return (
     <article className={classes}>
@@ -46,10 +61,10 @@ export function FeaturedStory({ story, href, priority = false, className }: Feat
       <div className={styles.featuredCopy}>
         <p className={styles.resourceLabel}>{kind}</p>
         <h1 className={styles.featuredTitle}>
-          <Link href={destination}>{story.title}</Link>
+          <Link aria-label={story.title} href={destination} title={story.title}>{title}</Link>
         </h1>
-        {story.excerpt ?? story.description ? (
-          <p className={styles.featuredExcerpt}>{story.excerpt ?? story.description}</p>
+        {summary ? (
+          <p className={styles.featuredExcerpt}>{truncateForFeature(summary, 130)}</p>
         ) : null}
         <AuthorMeta
           author={story.author ?? story.authors?.[0]}
