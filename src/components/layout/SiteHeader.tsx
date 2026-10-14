@@ -17,6 +17,7 @@ import type {
   SiteBrand,
 } from "./navigation.types";
 import { SearchPanel } from "./SearchPanel";
+import { useAccountAuth } from "@/components/account/AccountAuthProvider";
 import styles from "./site-header.module.css";
 
 export interface SiteHeaderProps {
@@ -99,6 +100,7 @@ export function SiteHeader({
   sideNavigation = {},
 }: SiteHeaderProps) {
   const pathname = usePathname();
+  const { state: accountState, user, signOut } = useAccountAuth();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isFeaturesOpen, setIsFeaturesOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -194,6 +196,11 @@ export function SiteHeader({
     openDrawer();
   };
 
+  const signOutAndReturnHome = async () => {
+    await signOut();
+    window.location.assign("/");
+  };
+
   return (
     <div className={[styles.shell, className].filter(Boolean).join(" ")}>
       <AnnouncementBar announcement={announcement} />
@@ -258,10 +265,30 @@ export function SiteHeader({
           </nav>
 
           <div className={styles.headerActions}>
-            <Link aria-label="Your account" className={styles.accountLink} href="/account">
-              <Icon name="user" size={20} />
-              <span>Account</span>
-            </Link>
+            {accountState === "authenticated" && user ? (
+              <details className={styles.accountMenu}>
+                <summary aria-label="Open your account menu" className={styles.accountLink}>
+                  <Icon name="user" size={20} />
+                  <span>{user.name.split(" ")[0]}</span>
+                </summary>
+                <div className={styles.accountMenuPanel}>
+                  <p className={styles.accountMenuIdentity}>{user.name}</p>
+                  <Link href="/account">My account</Link>
+                  <Link href="/account/library">My library</Link>
+                  <Link href="/account/orders">Orders</Link>
+                  <Link href="/account/subscriptions">Subscriptions</Link>
+                  <Link href="/account/payments">Payments</Link>
+                  <button onClick={() => void signOutAndReturnHome()} type="button">Sign out</button>
+                </div>
+              </details>
+            ) : accountState === "unauthenticated" ? (
+              <>
+                <Link aria-label="Sign in" className={styles.accountLink} href="/login"><Icon name="user" size={20} /><span>Sign in</span></Link>
+                <Link className={styles.joinLink} href="/register">Join</Link>
+              </>
+            ) : (
+              <Link aria-label="Your account" className={styles.accountLink} href="/account"><Icon name="user" size={20} /><span>Account</span></Link>
+            )}
             <IconButton
               aria-controls="site-search-panel"
               aria-expanded={isSearchOpen}

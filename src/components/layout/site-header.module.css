@@ -335,6 +335,77 @@
   text-decoration: none;
 }
 
+.accountMenu {
+  position: relative;
+}
+
+.accountMenu summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.accountMenu summary::-webkit-details-marker {
+  display: none;
+}
+
+.accountMenuPanel {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e4e1da);
+  box-shadow: 0 14px 28px rgba(35, 31, 27, 0.14);
+  display: grid;
+  min-width: 12rem;
+  padding: 0.45rem;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.35rem);
+  z-index: 75;
+}
+
+.accountMenuPanel a,
+.accountMenuPanel button {
+  background: transparent;
+  border: 0;
+  color: var(--text-primary, #242424);
+  font: inherit;
+  font-size: 0.83rem;
+  padding: 0.55rem 0.65rem;
+  text-align: left;
+  text-decoration: none;
+}
+
+.accountMenuPanel a:hover,
+.accountMenuPanel a:focus-visible,
+.accountMenuPanel button:hover,
+.accountMenuPanel button:focus-visible {
+  background: var(--surface-muted, #f6f4f0);
+  color: var(--brand-burgundy, #a00035);
+}
+
+.accountMenuIdentity {
+  border-bottom: 1px solid var(--border, #e4e1da);
+  font-size: 0.76rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+  padding: 0.45rem 0.65rem 0.7rem;
+}
+
+.joinLink {
+  align-items: center;
+  background: var(--brand-burgundy, #a00035);
+  color: #fff;
+  display: inline-flex;
+  font-size: 0.76rem;
+  font-weight: 700;
+  min-height: 2rem;
+  padding: 0 0.58rem;
+  text-decoration: none;
+}
+
+.joinLink:hover,
+.joinLink:focus-visible {
+  background: #790027;
+}
+
 .accountLink:hover,
 .accountLink:focus-visible {
   color: var(--brand-burgundy, #a00035);
@@ -695,6 +766,10 @@
 
   .accountLink {
     padding-inline: 0.35rem;
+  }
+
+  .joinLink {
+    display: none;
   }
 
   .announcement {

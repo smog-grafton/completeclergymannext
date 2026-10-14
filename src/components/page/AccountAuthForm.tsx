@@ -1,8 +1,9 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { saveAccessToken } from "@/lib/accountApi";
+import { useRouter, useSearchParams } from "next/navigation";
+import { accountJson, saveAccessToken } from "@/lib/accountApi";
+import { useAccountAuth } from "@/components/account/AccountAuthProvider";
 
 type Mode = "login" | "register";
 
@@ -10,7 +11,8 @@ export function AccountAuthForm({ mode }: { mode: Mode }) {
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   const searchParams = useSearchParams();
-  const apiBase = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
+  const router = useRouter();
+  const { refresh } = useAccountAuth();
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -19,14 +21,13 @@ export function AccountAuthForm({ mode }: { mode: Mode }) {
     if (mode === "register") payload.marketing_consent = data.get("marketing_consent") ? true : false;
     setPending(true); setError("");
     try {
-      if (!apiBase) throw new Error("Account services are not configured yet.");
-      const response = await fetch(`${apiBase}/api/v1/auth/${mode === "login" ? "login" : "register"}`, { method: "POST", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-      const body = await response.json().catch(() => null) as { data?: { token?: string }; message?: string; errors?: Record<string, string[]> } | null;
-      if (!response.ok || !body?.data?.token) throw new Error(Object.values(body?.errors ?? {})[0]?.[0] ?? body?.message ?? "We could not sign you in.");
+      const body = await accountJson<{ data: { token: string } }>(`/auth/${mode === "login" ? "login" : "register"}`, { method: "POST", body: JSON.stringify(payload) });
+      if (!body.data?.token) throw new Error("We could not sign you in.");
       saveAccessToken(body.data.token);
+      await refresh();
       const requestedNext = searchParams.get("next");
       const destination = requestedNext?.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/account";
-      window.location.assign(destination);
+      router.replace(destination);
     } catch (reason) { setError(reason instanceof Error ? reason.message : "We could not sign you in."); }
     finally { setPending(false); }
   }
@@ -35,6 +36,7 @@ export function AccountAuthForm({ mode }: { mode: Mode }) {
     {mode === "register" ? <><div className="form-field"><label className="field-label" htmlFor="account-name">Full name *</label><input className="field" id="account-name" name="name" required autoComplete="name" /></div><div className="form-field"><label className="field-label" htmlFor="account-phone">Phone number</label><input autoComplete="tel" className="field" id="account-phone" name="phone" type="tel" /><p className="field-help">Provide an email address or a phone number. You may provide both.</p></div><div className="form-field"><label className="field-label" htmlFor="account-country">Country</label><input autoComplete="country-name" className="field" id="account-country" name="country" /></div></> : null}
     <div className="form-field"><label className="field-label" htmlFor="account-email">{mode === "login" ? "Email address or phone number" : "Email address"}{mode === "login" ? " *" : ""}</label><input autoComplete={mode === "login" ? "username" : "email"} className="field" id="account-email" name={mode === "login" ? "login" : "email"} required={mode === "login"} type={mode === "login" ? "text" : "email"} /></div>
     <div className="form-field"><label className="field-label" htmlFor="account-password">{mode === "register" ? "Choose a password" : "Password"} *</label><input autoComplete={mode === "register" ? "new-password" : "current-password"} className="field" id="account-password" minLength={mode === "register" ? 12 : undefined} name="password" required type="password" />{mode === "register" ? <p className="field-help">Use at least 12 characters.</p> : null}</div>
+    {mode === "register" ? <div className="form-field"><label className="field-label" htmlFor="account-password-confirmation">Confirm password *</label><input autoComplete="new-password" className="field" id="account-password-confirmation" minLength={12} name="password_confirmation" required type="password" /></div> : null}
     {mode === "register" ? <label className="form-field form-field--full" style={{ display: "flex", gap: 10, alignItems: "flex-start" }}><input name="marketing_consent" type="checkbox" /><span><strong>Keep me informed</strong><span className="field-help" style={{ display: "block" }}>I am happy to receive occasional ministry and resource updates by email or SMS.</span></span></label> : null}
     {error ? <p className="field-error form-field--full" role="alert">{error}</p> : null}
     <div className="form-field form-field--full"><button className="button" disabled={pending} type="submit">{pending ? "Please wait…" : mode === "login" ? "Sign in" : "Create account"}</button></div>

@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { accessToken, accountJson, apiOrigin } from "@/lib/accountApi";
+import { accountJson, apiOrigin } from "@/lib/accountApi";
+import { useAccountAuth } from "@/components/account/AccountAuthProvider";
 
 type Gateway = { code: "iotec" | "flutterwave"; name: string; methods: ("mobile_money" | "card")[]; publicKey?: string | null };
 type Inline = { public_key: string; tx_ref: string; amount: number; currency: string; payment_options: string; customer: { email: string; name: string; phonenumber?: string | null }; customizations: { title: string; description: string } };
@@ -30,6 +31,7 @@ export function PaymentCheckout({ kind, slug, title, amount, currency, donation,
   const [error, setError] = useState("");
   const scriptRequested = useRef(false);
   const router = useRouter();
+  const { state: authState } = useAccountAuth();
 
   useEffect(() => {
     fetch(`${apiOrigin()}/api/v1/payments/methods?currency=${encodeURIComponent(currency)}`, { headers: { Accept: "application/json" } })
@@ -62,7 +64,7 @@ export function PaymentCheckout({ kind, slug, title, amount, currency, donation,
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (kind !== "donation" && !accessToken()) {
+    if (kind !== "donation" && authState !== "authenticated") {
       const next = kind === "subscription" ? "/subscriptions" : kind === "podcast" ? `/podcasts/${slug ?? ""}` : `/checkout?book=${slug ?? ""}`;
       router.push(`/login?next=${encodeURIComponent(next)}`);
       return;
